@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Boggle</title>
+    <link rel="stylesheet" href="css/Normalize.css">
+    <link rel="stylesheet" href="css/Styles.css">
+</head>
+<body>
+    <header>
+        <h1>Boggle</h1>
+        <a href="https://github.com/matiashuangyue/Boggle-Game" target="_blank">Ver en GitHub</a>
+        <a href="how-to-play.html" id="how-to-play-link">Cómo Jugar</a>
+    </header>
+    <main>
+        <section id="game-section">
+            <form id="player-form">
+                <label for="player-name">Nombre del Jugador:</label>
+                <input type="text" id="player-name" required minlength="3">
+                <button type="submit">Iniciar Juego</button>
+            </form>
+            <div id="game-board" class="hidden">
+                <div id="timer"></div>
+                <div id="score">Puntaje: 0</div>
+                <div id="current-word-container">
+                    <div id="current-word"></div>
+                    <button id="delete-word">Eliminar</button>
+                    <button id="validate-word">Validar</button>
+                    <button id="shuffle-board">Mezclar Tablero</button> 
+                </div>
+                <div id="board"></div>
+                <div id="word-list"></div>
+                <div id="message"></div> 
+                <button id="end-game">Terminar Juego</button>
+            </div>
+        </section>
+        <section id="modal" class="hidden">
+            <div id="modal-content">
+                <span id="close-modal">&times;</span>
+                <div id="modal-body"></div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <a href="contact.html">Contacto</a>
+    </footer>
+</body>
+</html>
