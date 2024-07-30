@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Over</title>
+    <link rel="stylesheet" href="css/Normalize.css">
+    <link rel="stylesheet" href="css/Styles.css">
+</head>
+<body>
+    <header>
+        <h1>Game Over</h1>
+    </header>
+    <main>
+        <div id="game-over-info">
+            <h1>GAME OVER</h1>
+            <p id="player-name-display"></p>
+            <p id="score-display"></p>
+            <button onclick="goToHome()">Volver al Inicio</button>
+        </div>
+    </main>
+    <script>
+        function restartGame() {
+            window.location.href = 'index.html';
+        }
+
+        function goToHome() {
+            window.location.href = 'index.html';
+        }
+
+        // Obtener datos del localStorage y mostrar en la página
+        document.addEventListener('DOMContentLoaded', function() {
+            const playerName = localStorage.getItem('playerName');
+            const score = localStorage.getItem('score');
+
+            document.getElementById('player-name-display').textContent = `Jugador: ${playerName}`;
+            document.getElementById('score-display').textContent = `Puntaje: ${score}`;
+        });
+    </script>
+</body>
+</html>
