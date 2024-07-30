@@ -32,3 +32,127 @@ main {
     width: 100%;
     padding: 2em;
 }
+
+#game-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#player-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#player-form input, #player-form button {
+    margin: 0.5em;
+}
+
+#game-board.hidden {
+    display: none;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 10px;
+    max-width: 200px; /* Ajusta según sea necesario */
+    margin: auto;
+}
+
+.board-cell {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.board-cell.selected {
+    background-color: #e3e3e3; /* Color de fondo cuando la celda está seleccionada */
+}
+
+#timer {
+    font-size: 1.5em;
+    margin: 1em 0;
+}
+
+#modal.hidden {
+    display: none;
+}
+
+#modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#modal-content {
+    background-color: white;
+    padding: 2em;
+    border-radius: 5px;
+    width: 300px;
+}
+
+#close-modal {
+    cursor: pointer;
+    float: right;
+}
+
+#current-word-container {
+    display: flex;
+    align-items: center;
+    margin: 1em 0;
+}
+
+#current-word {
+    margin-right: 10px;
+    font-size: 1.2em;
+}
+
+button {
+    margin: 5px;
+}
+
+.hidden {
+    display: none;
+}
+
+#game-over {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.5em;
+    color: red;
+}
+
+#game-over-info {
+    text-align: center;
+}
+
+#game-over-info button {
+    margin-top: 10px;
+}
+
+.contact-htp {
+    margin-right: 50%;
+    margin-bottom: 25%;
+}
+
+.index-htp {
+    margin-left: 50%;
+    margin-bottom: 25%;
+}
+
+.contenedor-htp {
+    display: flex;
+    justify-content: center;
+}
