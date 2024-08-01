@@ -1,13 +1,13 @@
 'use strict';
-
+// al inicial el DOM se ejecuta la funcion
 document.addEventListener('DOMContentLoaded', function() {
     var contactForm = document.getElementById('contact-form');
     var contactNameInput = document.getElementById('contact-name');
     var contactEmailInput = document.getElementById('contact-email');
     var contactMessageInput = document.getElementById('contact-message');
-
+// se agrega un evento al formulario para que al enviarlo se ejecute la funcion
     contactForm.addEventListener('submit', function(event) {
-        event.preventDefault();
+        event.preventDefault();// se previene el comportamiento por defecto del formulario
 
         var name = contactNameInput.value;
         var email = contactEmailInput.value;
