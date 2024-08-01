@@ -156,3 +156,54 @@ button {
     display: flex;
     justify-content: center;
 }
+
+/* Estilos para modo claro */
+body.light-mode {
+    background-color: white;
+    color: black;
+}
+
+body.light-mode header {
+    background-color: #4CAF50;
+}
+
+body.light-mode a {
+    color: white;
+}
+
+body.light-mode .board-cell {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+}
+
+body.light-mode .board-cell.selected {
+    background-color: #e3e3e3;
+}
+
+/* Estilos para modo oscuro */
+body.dark-mode {
+    background-color: #121212;
+    color: white;
+}
+
+body.dark-mode header {
+    background-color: #333;
+}
+
+body.dark-mode a {
+    color: white;
+}
+
+body.dark-mode #theme-toggle {
+    color: black;
+    background-color: white;
+}
+
+body.dark-mode .board-cell {
+    background-color: #333;
+    border: 1px solid #555;
+}
+
+body.dark-mode .board-cell.selected {
+    background-color: #555;
+}
