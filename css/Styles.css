@@ -207,3 +207,35 @@ body.dark-mode .board-cell {
 body.dark-mode .board-cell.selected {
     background-color: #555;
 }
+
+/* Media queries para adaptar celu */
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    main {
+        padding: 1em;
+    }
+
+    #board {
+        grid-template-columns: repeat(4, 1fr);
+        grid-gap: 5px;
+        max-width: 100%;
+    }
+
+    .board-cell {
+        padding: 10px;
+        font-size: 1.2rem;
+    }
+
+    #modal-content {
+        width: 80%;
+        padding: 1em;
+    }
+    
+    #timer {
+        font-size: 1.2em;
+    }
+}
