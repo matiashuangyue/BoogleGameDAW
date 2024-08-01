@@ -230,4 +230,5 @@ document.addEventListener('DOMContentLoaded', function() {
         messageElement.textContent = message; // Establece el texto del mensaje
         messageElement.className = type; // Establece la clase del mensaje
     }
+
 });
