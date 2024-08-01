@@ -122,44 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return 0;
     }
 
-    // Función para validar la palabra
-    function validateWord(word) {
-        if (word.length < 3) {
-            showMessage('La palabra debe tener al menos 3 letras.');
-            deleteWordButton.click();
-            return;
-        }
-
-        if (game.wordsFound.includes(word)) {
-            showMessage('Esta palabra ya ha sido encontrada.');
-            deleteWordButton.click(); // Eliminar la palabra si ya ha sido encontrada
-            return;
-        }
-
-        // Valida la palabra usando una API de diccionario
-        fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.title !== 'No Definitions Found') {
-                    game.wordsFound.push(word); // Añade la palabra a las palabras encontradas
-                    game.score += calculateScore(word.length); // Actualiza el puntaje
-                    scoreElement.textContent = 'Puntaje: ' + game.score; // Actualiza el puntaje en el DOM
-                    wordListElement.innerHTML += `<li>${word}</li>`; // Añade la palabra a la lista de palabras encontradas
-                    game.currentWord = ''; // Resetea la palabra actual
-                    game.currentWordPath = []; // Resetea el camino de la palabra actual
-                    currentWordElement.textContent = ''; // Limpia la palabra actual en el DOM
-                    clearSelectedCells(); // Limpia las celdas seleccionadas
-                    showMessage('Palabra válida', 'success'); // Muestra un mensaje de éxito
-                } else {
-                    showMessage('Palabra no válida'); // Muestra un mensaje de error
-                    deleteWordButton.click(); // Elimina la palabra si no es válida
-                }
-            })
-            .catch(error => {
-                console.error('Error al validar la palabra:', error); // Muestra un error en la consola
-                showMessage('Error al validar la palabra'); // Muestra un mensaje de error
-            });
-    }
+   
 
     // Función para eliminar la palabra actual
     function deleteWord() {
