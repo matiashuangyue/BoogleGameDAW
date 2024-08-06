@@ -15,9 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var validateWordButton = document.getElementById('validate-word');
     var shuffleBoardButton = document.getElementById('shuffle-board');
     var messageElement = document.getElementById('message');
-    
 
-    // Define el objeto 'game' que contiene el estado del juego
     var game = {
         timer: null,
         timeLeft: 180, // 3 minutos en segundos por defecto
@@ -33,22 +31,20 @@ document.addEventListener('DOMContentLoaded', function() {
     function generateBoard() {
         var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         var board = [];
-        for (var i = 0; i < 16; i++) { // Tablero de 4x4
-            board.push(letters.charAt(Math.floor(Math.random() * letters.length)));// Añade una letra aleatoria al tablero
+        for (var i = 0; i < 16; i++) { 
+            board.push(letters.charAt(Math.floor(Math.random() * letters.length)));
         }
-        return board;// Devuelve el tablero
+        return board;
     }
 
     // Función para mezclar el tablero
     function shuffleBoard() {
-    // Bucle para recorrer el tablero desde el último elemento hasta el segundo
     for (let i = game.board.length - 1; i > 0; i--) {
-        // Genera un índice aleatorio entre 0 y i (inclusive)
         const j = Math.floor(Math.random() * (i + 1));
         // Intercambia el elemento en la posición i con el elemento en la posición j
         [game.board[i], game.board[j]] = [game.board[j], game.board[i]];
     }
-    // Actualiza el tablero en el DOM después de mezclarlo
+    // Actualiza el tablero
     updateBoard();
     }   
 
@@ -63,8 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Obtiene el tiempo seleccionado del temporizador
         game.timeLeft = parseInt(timerSelect.value);
-
-        // Oculta el formulario del nombre del jugador y muestra el tablero del juego
         playerForm.style.display = 'none';
         gameBoard.classList.remove('hidden');
 
@@ -74,8 +68,8 @@ document.addEventListener('DOMContentLoaded', function() {
         game.currentWordPath = [];
         game.wordsFound = [];
         game.board = generateBoard(); // Genera un nuevo tablero cada vez que se inicia el juego
-        updateBoard(); // Actualiza el tablero en el DOM
-        updateTimer(); // Inicia el temporizador
+        updateBoard(); 
+        updateTimer(); 
         game.timer = setInterval(updateTimer, 1000); // Actualiza el temporizador cada segundo
     }
 
@@ -84,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
         boardElement.innerHTML = ''; // Limpia el tablero
         game.board.forEach(function(letter, index) {
             var cell = document.createElement('div');
-            cell.textContent = letter; // Establece la letra de la celda
+            cell.textContent = letter; 
             cell.dataset.index = index; // Establece el índice de la celda
             cell.classList.add('board-cell'); // Añade la clase board-cell
             cell.addEventListener('click', function() {
@@ -163,39 +157,38 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Valida la palabra usando una API de diccionario
         fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
             .then(response => response.json())
             .then(data => {
                 if (data.title !== 'No Definitions Found') {
-                    game.wordsFound.push(word); // Añade la palabra a las palabras encontradas
-                    game.score += calculateScore(word.length); // Actualiza el puntaje
+                    game.wordsFound.push(word); 
+                    game.score += calculateScore(word.length); 
                     scoreElement.textContent = 'Puntaje: ' + game.score; // Actualiza el puntaje en el DOM
-                    wordListElement.innerHTML += `<li>${word}</li>`; // Añade la palabra a la lista de palabras encontradas
-                    game.currentWord = ''; // Resetea la palabra actual
-                    game.currentWordPath = []; // Resetea el camino de la palabra actual
+                    wordListElement.innerHTML += `<li>${word}</li>`; 
+                    game.currentWord = ''; // Resetea 
+                    game.currentWordPath = []; 
                     currentWordElement.textContent = ''; // Limpia la palabra actual en el DOM
                     clearSelectedCells(); // Limpia las celdas seleccionadas
-                    showMessage('Palabra válida', 'success'); // Muestra un mensaje de éxito
+                    showMessage('Palabra válida', 'success'); 
                 } else {
                     game.score -= 1; // Resta un punto por palabra incorrecta
                     scoreElement.textContent = 'Puntaje: ' + game.score; // Actualiza el puntaje en el DOM
-                    showMessage('Palabra no válida'); // Muestra un mensaje de error
+                    showMessage('Palabra no válida'); 
                     deleteWordButton.click(); // Elimina la palabra si no es válida
                 }
             })
             .catch(error => {
-                console.error('Error al validar la palabra:', error); // Muestra un error en la consola
-                showMessage('Error al validar la palabra'); // Muestra un mensaje de error
+                console.error('Error al validar la palabra:', error); 
+                showMessage('Error al validar la palabra'); 
             });
     }
 
     // Función para eliminar la palabra actual
     function deleteWord() {
-        game.currentWord = ''; // Resetea la palabra actual
-        game.currentWordPath = []; // Resetea el camino de la palabra actual
-        currentWordElement.textContent = ''; // Limpia la palabra actual en el DOM
-        clearSelectedCells(); // Limpia las celdas seleccionadas
+        game.currentWord = ''; // Resetea 
+        game.currentWordPath = []; 
+        currentWordElement.textContent = ''; 
+        clearSelectedCells(); 
     }
 
     // Función para limpiar las celdas seleccionadas
@@ -217,15 +210,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para finalizar el juego
     function endGame() {
-        localStorage.setItem('playerName', game.playerName); // Guarda el nombre del jugador en el almacenamiento local
-        localStorage.setItem('score', game.score); // Guarda el puntaje en el almacenamiento local
-        window.location.href = 'gameover.html'; // Redirige a la página de fin de juego
+        localStorage.setItem('playerName', game.playerName);
+        localStorage.setItem('score', game.score); 
+        window.location.href = 'gameover.html'; 
     }
 
     // Añade un event listener para iniciar el juego al enviar el formulario
     playerForm.addEventListener('submit', function(event) {
         event.preventDefault(); // Evita el comportamiento por defecto del formulario
-        startGame(); // Inicia el juego
+        startGame(); 
     });
 
     // Añade event listeners para los botones de eliminar palabra, validar palabra y mezclar tablero
@@ -239,19 +232,19 @@ document.addEventListener('DOMContentLoaded', function() {
     // Función para reiniciar el juego
     function resetGame() {
         clearInterval(game.timer); // Detiene el temporizador
-        game.timeLeft = 180; // Reinicia el tiempo
-        game.score = 0; // Reinicia el puntaje
-        game.currentWord = ''; // Resetea la palabra actual
-        game.currentWordPath = []; // Resetea el camino de la palabra actual
-        game.wordsFound = []; // Resetea las palabras encontradas
-        game.board = generateBoard(); // Genera un nuevo tablero
-        updateBoard(); // Actualiza el tablero en el DOM
-        scoreElement.textContent = 'Puntaje: 0'; // Reinicia el puntaje en el DOM
-        wordListElement.innerHTML = ''; // Limpia la lista de palabras encontradas
-        currentWordElement.textContent = ''; // Limpia la palabra actual en el DOM
+        game.timeLeft = 180; 
+        game.score = 0; 
+        game.currentWord = ''; 
+        game.currentWordPath = []; // Resetea la palabra actual y el camino
+        game.wordsFound = []; 
+        game.board = generateBoard(); 
+        updateBoard(); 
+        scoreElement.textContent = 'Puntaje: 0';
+        wordListElement.innerHTML = ''; 
+        currentWordElement.textContent = ''; 
         playerForm.style.display = 'flex'; // Muestra el formulario nuevamente
         gameBoard.classList.add('hidden'); // Oculta el tablero del juego
-        messageElement.textContent = ''; // Limpia el mensaje
+        messageElement.textContent = ''; 
     }
 
     // Función para mostrar mensajes
