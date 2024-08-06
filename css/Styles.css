@@ -45,7 +45,8 @@ main {
     align-items: center;
 }
 
-#player-form input, #player-form button {
+#player-form input, 
+#player-form button {
     margin: 0.5em;
 }
 
@@ -56,31 +57,32 @@ main {
 #board {
     display: flex;
     flex-wrap: wrap;
-    max-width: 200px;
-    margin: auto;
+    width: 160px; /* Ajusta el tamaño del tablero */
 }
 
 .board-cell {
     background-color: #F0F0F0;
     border: 1px solid #CCCCCC;
-    padding: 20px;
+    width: 25%;
+    height: 40px;
     text-align: center;
     font-size: 1.5rem;
     cursor: pointer;
     user-select: none;
+    box-sizing: border-box; /* Para que el tamaño incluya el borde */
 }
 
 .board-cell.selected {
     background-color: #E3E3E3;
 }
 
+.board-cell.selectable {
+    background-color: #B3E5FC;
+}
+
 #timer {
     font-size: 1.5em;
     margin: 1em 0;
-}
-
-#modal.hidden {
-    display: none;
 }
 
 #modal {
@@ -93,6 +95,10 @@ main {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#modal.hidden {
+    display: none;
 }
 
 #modal-content {
@@ -237,10 +243,11 @@ body.dark-mode #theme-toggle {
 
     #board {
         flex-wrap: wrap;
-        max-width: 100%;
+        width: 100%;
     }
 
     .board-cell {
+        width: 22%;
         padding: 10px;
         font-size: 1.2rem;
     }
@@ -253,9 +260,4 @@ body.dark-mode #theme-toggle {
     #timer {
         font-size: 1.2em;
     }
-}
-
-/* Color diferente para las letras seleccionables */
-.board-cell.selectable {
-    background-color: #B3E5FC; 
 }

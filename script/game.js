@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         return board;
     }
-    
+     
     var game = {
         timer: null,
         timeLeft: 180, // 3 minutos en segundos por defecto

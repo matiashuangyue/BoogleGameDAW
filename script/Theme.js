@@ -1,3 +1,4 @@
+'use strict';
 document.addEventListener('DOMContentLoaded', function() {
     const themeToggleButton = document.getElementById('theme-toggle');
     const currentTheme = localStorage.getItem('theme');
