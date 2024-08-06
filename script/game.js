@@ -17,6 +17,16 @@ document.addEventListener('DOMContentLoaded', function() {
     var shuffleBoardButton = document.getElementById('shuffle-board');
     var messageElement = document.getElementById('message');
 
+ // Función para generar un tablero de letras aleatorias
+    function generateBoard() {
+        var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        var board = [];
+        for (var i = 0; i < 16; i++) { 
+            board.push(letters.charAt(Math.floor(Math.random() * letters.length)));
+        }
+        return board;
+    }
+    
     var game = {
         timer: null,
         timeLeft: 180, // 3 minutos en segundos por defecto
@@ -28,15 +38,7 @@ document.addEventListener('DOMContentLoaded', function() {
         board: generateBoard()// Tablero de letras
     };
 
-    // Función para generar un tablero de letras aleatorias
-    function generateBoard() {
-        var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-        var board = [];
-        for (var i = 0; i < 16; i++) { 
-            board.push(letters.charAt(Math.floor(Math.random() * letters.length)));
-        }
-        return board;
-    }
+   
 
     // Función para mezclar el tablero
     function shuffleBoard() {
@@ -122,7 +124,7 @@ document.addEventListener('DOMContentLoaded', function() {
         ];
 
         validMoves.forEach(function(index) {
-            if (index >= 0 && index < 16 && !game.currentWordPath.includes(index)) {
+            if (index >= 0 && index < 16 && game.currentWordPath.indexOf(index) === -1) {
                 document.querySelector(`[data-index='${index}']`).classList.add('selectable');
             }
         });
@@ -195,7 +197,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Función para limpiar las celdas seleccionadas
     function clearSelectedCells() {
         var cells = document.querySelectorAll('.board-cell'); // Obtiene todas las celdas del tablero
-        cells.forEach(cell => cell.classList.remove('selected')); // Elimina la clase 'selected' de cada celda
+        cells.forEach(function(cell) {
+            cell.classList.remove('selected');
+        }); // Elimina la clase 'selected' de cada celda
     }
 
     // Función para actualizar el temporizador
