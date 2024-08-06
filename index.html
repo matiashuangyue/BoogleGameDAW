@@ -19,6 +19,14 @@
             <form id="player-form">
                 <label for="player-name">Nombre del Jugador:</label>
                 <input type="text" id="player-name" required minlength="3">
+                
+                <label for="timer-select">Temporizador:</label>
+                <select id="timer-select" required>
+                    <option value="60">1 minuto</option>
+                    <option value="120">2 minutos</option>
+                    <option value="180">3 minutos</option>
+                </select>
+
                 <button type="submit">Iniciar Juego</button>
             </form>
             <div id="game-board" class="hidden">
