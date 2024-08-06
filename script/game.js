@@ -1,41 +1,228 @@
 'use strict';
-
-// Declaración de variables globales
-var playerForm, playerNameInput, timerSelect, gameBoard, timerElement, scoreElement, currentWordElement, wordListElement, endGameButton, boardElement, deleteWordButton, validateWordButton, shuffleBoardButton, messageElement;
-var game = {
-    timer: null,
-    timeLeft: 180,
-    score: 0,
-    currentWord: '',
-    currentWordPath: [],
-    wordsFound: [],
-    playerName: '',
-    board: []
-};
-
 // Espera a que el DOM esté completamente cargado
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', function() {
+    // Obtiene referencias a los elementos del DOM por sus IDs
+    var playerForm = document.getElementById('player-form');
+    var playerNameInput = document.getElementById('player-name');
+    var timerSelect = document.getElementById('timer-select');
+    var gameBoard = document.getElementById('game-board');
+    var timerElement = document.getElementById('timer');
+    var scoreElement = document.getElementById('score');
+    var currentWordElement = document.getElementById('current-word');
+    var wordListElement = document.getElementById('word-list');
+    var endGameButton = document.getElementById('end-game');
+    var boardElement = document.getElementById('board');
+    var deleteWordButton = document.getElementById('delete-word');
+    var validateWordButton = document.getElementById('validate-word');
+    var shuffleBoardButton = document.getElementById('shuffle-board');
+    var messageElement = document.getElementById('message');
 
-function init() {
-    playerForm = document.getElementById('player-form');
-    playerNameInput = document.getElementById('player-name');
-    timerSelect = document.getElementById('timer-select');
-    gameBoard = document.getElementById('game-board');
-    timerElement = document.getElementById('timer');
-    scoreElement = document.getElementById('score');
-    currentWordElement = document.getElementById('current-word');
-    wordListElement = document.getElementById('word-list');
-    endGameButton = document.getElementById('end-game');
-    boardElement = document.getElementById('board');
-    deleteWordButton = document.getElementById('delete-word');
-    validateWordButton = document.getElementById('validate-word');
-    shuffleBoardButton = document.getElementById('shuffle-board');
-    messageElement = document.getElementById('message');
+    var game = {
+        timer: null,
+        timeLeft: 180, // 3 minutos en segundos por defecto
+        score: 0,
+        currentWord: '',// Palabra actual
+        currentWordPath: [],// Camino de la palabra actual
+        wordsFound: [],// Palabras encontradas
+        playerName: '',
+        board: generateBoard()// Tablero de letras
+    };
 
+    // Función para generar un tablero de letras aleatorias
+    function generateBoard() {
+        var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        var board = [];
+        for (var i = 0; i < 16; i++) { 
+            board.push(letters.charAt(Math.floor(Math.random() * letters.length)));
+        }
+        return board;
+    }
+
+    // Función para mezclar el tablero
+    function shuffleBoard() {
+    for (let i = game.board.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        // Intercambia el elemento en la posición i con el elemento en la posición j
+        [game.board[i], game.board[j]] = [game.board[j], game.board[i]];
+    }
+    // Actualiza el tablero
+    updateBoard();
+    }   
+
+
+    // Función para iniciar el juego
+    function startGame() {
+        game.playerName = playerNameInput.value; // Obtiene el nombre del jugador
+        if (game.playerName.length < 3) {
+            showMessage('El nombre debe tener al menos 3 letras.');
+            return;
+        }
+
+        // Obtiene el tiempo seleccionado del temporizador
+        game.timeLeft = parseInt(timerSelect.value);
+        playerForm.style.display = 'none';
+        gameBoard.classList.remove('hidden');
+
+        // Reinicia el estado del juego
+        game.score = 0;
+        game.currentWord = '';
+        game.currentWordPath = [];
+        game.wordsFound = [];
+        game.board = generateBoard(); // Genera un nuevo tablero cada vez que se inicia el juego
+        updateBoard(); 
+        updateTimer(); 
+        game.timer = setInterval(updateTimer, 1000); // Actualiza el temporizador cada segundo
+    }
+
+    // Función para actualizar el tablero en el DOM
+    function updateBoard() {
+        boardElement.innerHTML = ''; // Limpia el tablero
+        game.board.forEach(function(letter, index) {
+            var cell = document.createElement('div');
+            cell.textContent = letter; 
+            cell.dataset.index = index; // Establece el índice de la celda
+            cell.classList.add('board-cell'); // Añade la clase board-cell
+            cell.addEventListener('click', function() {
+                selectLetter(letter, index); // Añade el event listener para seleccionar la letra
+            });
+            boardElement.appendChild(cell); // Añade la celda al tablero
+        });
+    }
+
+    // Función para seleccionar una letra en el tablero
+    function selectLetter(letter, index) {
+        if (game.currentWordPath.length === 0 || isValidSelection(index)) {
+            game.currentWord += letter; // Añade la letra a la palabra actual
+            game.currentWordPath.push(index); // Añade el índice al camino de la palabra actual
+            currentWordElement.textContent = game.currentWord; // Actualiza la palabra actual en el DOM
+            document.querySelector(`[data-index='${index}']`).classList.add('selected'); // Marca la celda como seleccionada
+            updateSelectableLetters(index); // Actualiza las letras seleccionables
+        }
+    }
+
+    // Función para validar si la selección de una letra es correcta
+    function isValidSelection(index) {
+        var lastIndex = game.currentWordPath[game.currentWordPath.length - 1]; // Obtiene el último índice
+        var validMoves = [
+            lastIndex - 5, lastIndex - 4, lastIndex - 3, // Fila anterior
+            lastIndex - 1, lastIndex + 1,               // Misma fila
+            lastIndex + 3, lastIndex + 4, lastIndex + 5 // Siguiente fila
+        ];
+        // Comprueba si el índice es un movimiento válido y no está en el camino actual
+        return validMoves.includes(index) && !game.currentWordPath.includes(index);
+    }
+
+    // Función para actualizar las letras seleccionables
+    function updateSelectableLetters(lastIndex) {
+        clearSelectableCells();
+        var validMoves = [
+            lastIndex - 5, lastIndex - 4, lastIndex - 3,
+            lastIndex - 1, lastIndex + 1,
+            lastIndex + 3, lastIndex + 4, lastIndex + 5
+        ];
+
+        validMoves.forEach(function(index) {
+            if (index >= 0 && index < 16 && !game.currentWordPath.includes(index)) {
+                document.querySelector(`[data-index='${index}']`).classList.add('selectable');
+            }
+        });
+    }
+
+    // Función para limpiar las celdas seleccionables
+    function clearSelectableCells() {
+        var cells = document.querySelectorAll('.board-cell');
+        cells.forEach(cell => cell.classList.remove('selectable'));
+    }
+
+    // Función para calcular el puntaje basado en la longitud de la palabra
+    function calculateScore(length) {
+        if (length >= 8) return 11;
+        if (length === 7) return 5;
+        if (length === 6) return 3;
+        if (length === 5) return 2;
+        if (length === 3 || length === 4) return 1;
+        return 0;
+    }
+
+    // Función para validar la palabra
+    function validateWord(word) {
+        if (word.length < 3) {
+            showMessage('La palabra debe tener al menos 3 letras.');
+            deleteWordButton.click();
+            return;
+        }
+
+        if (game.wordsFound.includes(word)) {
+            showMessage('Esta palabra ya ha sido encontrada.');
+            deleteWordButton.click(); // Eliminar la palabra si ya ha sido encontrada
+            return;
+        }
+
+        fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.title !== 'No Definitions Found') {
+                    game.wordsFound.push(word); 
+                    game.score += calculateScore(word.length); 
+                    scoreElement.textContent = 'Puntaje: ' + game.score; // Actualiza el puntaje en el DOM
+                    wordListElement.innerHTML += `<li>${word}</li>`; 
+                    game.currentWord = ''; // Resetea 
+                    game.currentWordPath = []; 
+                    currentWordElement.textContent = ''; // Limpia la palabra actual en el DOM
+                    clearSelectedCells(); // Limpia las celdas seleccionadas
+                    showMessage('Palabra válida', 'success'); 
+                } else {
+                    game.score -= 1; // Resta un punto por palabra incorrecta
+                    scoreElement.textContent = 'Puntaje: ' + game.score; // Actualiza el puntaje en el DOM
+                    showMessage('Palabra no válida'); 
+                    deleteWordButton.click(); // Elimina la palabra si no es válida
+                }
+            })
+            .catch(error => {
+                console.error('Error al validar la palabra:', error); 
+                showMessage('Error al validar la palabra'); 
+            });
+    }
+
+    // Función para eliminar la palabra actual
+    function deleteWord() {
+        game.currentWord = ''; // Resetea 
+        game.currentWordPath = []; 
+        currentWordElement.textContent = ''; 
+        clearSelectedCells(); 
+    }
+
+    // Función para limpiar las celdas seleccionadas
+    function clearSelectedCells() {
+        var cells = document.querySelectorAll('.board-cell'); // Obtiene todas las celdas del tablero
+        cells.forEach(cell => cell.classList.remove('selected')); // Elimina la clase 'selected' de cada celda
+    }
+
+    // Función para actualizar el temporizador
+    function updateTimer() {
+        if (game.timeLeft <= 0) {
+            clearInterval(game.timer); // Detiene el temporizador
+            endGame(); // Finaliza el juego
+        } else {
+            timerElement.textContent = 'Tiempo: ' + game.timeLeft + 's'; // Actualiza el temporizador en el DOM
+            game.timeLeft--; // Decrementa el tiempo restante
+        }
+    }
+
+    // Función para finalizar el juego
+    function endGame() {
+        localStorage.setItem('playerName', game.playerName);
+        localStorage.setItem('score', game.score); 
+        window.location.href = 'gameover.html'; 
+    }
+
+    // Añade un event listener para iniciar el juego al enviar el formulario
     playerForm.addEventListener('submit', function(event) {
-        event.preventDefault();
-        startGame();
+        event.preventDefault(); // Evita el comportamiento por defecto del formulario
+        startGame(); 
     });
+
+    // Añade event listeners para los botones de eliminar palabra, validar palabra y mezclar tablero
     deleteWordButton.addEventListener('click', deleteWord);
     validateWordButton.addEventListener('click', function() {
         validateWord(game.currentWord);
@@ -43,217 +230,28 @@ function init() {
     shuffleBoardButton.addEventListener('click', shuffleBoard);
     endGameButton.addEventListener('click', endGame);
 
-    resetGame();
-}
-
-// Función para generar un tablero de letras aleatorias
-function generateBoard() {
-    var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    var board = [];
-    for (var i = 0; i < 16; i++) {
-        board.push(letters.charAt(Math.floor(Math.random() * letters.length)));
-    }
-    return board;
-}
-
-// Función para mezclar el tablero
-function shuffleBoard() {
-    for (var i = game.board.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var temp = game.board[i];
-        game.board[i] = game.board[j];
-        game.board[j] = temp;
-    }
-    updateBoard();
-}
-
-// Función para iniciar el juego
-function startGame() {
-    game.playerName = playerNameInput.value;
-    if (game.playerName.length < 3) {
-        showMessage('El nombre debe tener al menos 3 letras.');
-        return;
-    }
-    game.timeLeft = parseInt(timerSelect.value);
-    playerForm.style.display = 'none';
-    gameBoard.classList.remove('hidden');
-    game.score = 0;
-    game.currentWord = '';
-    game.currentWordPath = [];
-    game.wordsFound = [];
-    game.board = generateBoard();
-    updateBoard();
-    updateTimer();
-    game.timer = setInterval(updateTimer, 1000);
-}
-
-// Función para actualizar el tablero en el DOM
-function updateBoard() {
-    boardElement.innerHTML = '';
-    for (var i = 0; i < game.board.length; i++) {
-        var cell = document.createElement('div');
-        cell.textContent = game.board[i];
-        cell.dataset.index = i;
-        cell.classList.add('board-cell');
-        cell.addEventListener('click', function() {
-            selectLetter(this.textContent, parseInt(this.dataset.index));
-        });
-        boardElement.appendChild(cell);
-    }
-}
-
-// Función para seleccionar una letra en el tablero
-function selectLetter(letter, index) {
-    if (game.currentWordPath.length === 0 || isValidSelection(index)) {
-        game.currentWord += letter;
-        game.currentWordPath.push(index);
-        currentWordElement.textContent = game.currentWord;
-        document.querySelector('[data-index="' + index + '"]').classList.add('selected');
-        updateSelectableLetters(index);
-    }
-}
-
-// Función para validar si la selección de una letra es correcta
-function isValidSelection(index) {
-    var lastIndex = game.currentWordPath[game.currentWordPath.length - 1];
-    var validMoves = [
-        lastIndex - 5, lastIndex - 4, lastIndex - 3,
-        lastIndex - 1, lastIndex + 1,
-        lastIndex + 3, lastIndex + 4, lastIndex + 5
-    ];
-    return validMoves.indexOf(index) !== -1 && game.currentWordPath.indexOf(index) === -1;
-}
-
-// Función para actualizar las letras seleccionables
-function updateSelectableLetters(lastIndex) {
-    clearSelectableCells();
-    var validMoves = [
-        lastIndex - 5, lastIndex - 4, lastIndex - 3,
-        lastIndex - 1, lastIndex + 1,
-        lastIndex + 3, lastIndex + 4, lastIndex + 5
-    ];
-
-    for (var i = 0; i < validMoves.length; i++) {
-        var index = validMoves[i];
-        if (index >= 0 && index < 16 && game.currentWordPath.indexOf(index) === -1) {
-            document.querySelector('[data-index="' + index + '"]').classList.add('selectable');
-        }
-    }
-}
-
-// Función para limpiar las celdas seleccionables
-function clearSelectableCells() {
-    var cells = document.querySelectorAll('.board-cell');
-    for (var i = 0; i < cells.length; i++) {
-        cells[i].classList.remove('selectable');
-    }
-}
-
-// Función para calcular el puntaje basado en la longitud de la palabra
-function calculateScore(length) {
-    if (length >= 8) return 11;
-    if (length === 7) return 5;
-    if (length === 6) return 3;
-    if (length === 5) return 2;
-    if (length === 3 || length === 4) return 1;
-    return 0;
-}
-
-// Función para validar la palabra
-function validateWord(word) {
-    if (word.length < 3) {
-        showMessage('La palabra debe tener al menos 3 letras.');
-        deleteWordButton.click();
-        return;
+    // Función para reiniciar el juego
+    function resetGame() {
+        clearInterval(game.timer); // Detiene el temporizador
+        game.timeLeft = 180; 
+        game.score = 0; 
+        game.currentWord = ''; 
+        game.currentWordPath = []; // Resetea la palabra actual y el camino
+        game.wordsFound = []; 
+        game.board = generateBoard(); 
+        updateBoard(); 
+        scoreElement.textContent = 'Puntaje: 0';
+        wordListElement.innerHTML = ''; 
+        currentWordElement.textContent = ''; 
+        playerForm.style.display = 'flex'; // Muestra el formulario nuevamente
+        gameBoard.classList.add('hidden'); // Oculta el tablero del juego
+        messageElement.textContent = ''; 
     }
 
-    if (game.wordsFound.indexOf(word) !== -1) {
-        showMessage('Esta palabra ya ha sido encontrada.');
-        deleteWordButton.click();
-        return;
+    // Función para mostrar mensajes
+    function showMessage(message, type = 'error') {
+        messageElement.textContent = message; // Establece el texto del mensaje
+        messageElement.className = type; // Establece la clase del mensaje
     }
 
-    fetch('https://api.dictionaryapi.dev/api/v2/entries/en/' + word)
-        .then(function(response) { return response.json(); })
-        .then(function(data) {
-            if (data.title !== 'No Definitions Found') {
-                game.wordsFound.push(word);
-                game.score += calculateScore(word.length);
-                scoreElement.textContent = 'Puntaje: ' + game.score;
-                wordListElement.innerHTML += '<li>' + word + '</li>';
-                game.currentWord = '';
-                game.currentWordPath = [];
-                currentWordElement.textContent = '';
-                clearSelectedCells();
-                showMessage('Palabra válida', 'success');
-            } else {
-                game.score -= 1;
-                scoreElement.textContent = 'Puntaje: ' + game.score;
-                showMessage('Palabra no válida');
-                deleteWordButton.click();
-            }
-        })
-        .catch(function(error) {
-            console.error('Error al validar la palabra:', error);
-            showMessage('Error al validar la palabra');
-        });
-}
-
-// Función para eliminar la palabra actual
-function deleteWord() {
-    game.currentWord = '';
-    game.currentWordPath = [];
-    currentWordElement.textContent = '';
-    clearSelectedCells();
-}
-
-// Función para limpiar las celdas seleccionadas
-function clearSelectedCells() {
-    var cells = document.querySelectorAll('.board-cell');
-    for (var i = 0; i < cells.length; i++) {
-        cells[i].classList.remove('selected');
-    }
-}
-
-// Función para actualizar el temporizador
-function updateTimer() {
-    if (game.timeLeft <= 0) {
-        clearInterval(game.timer);
-        endGame();
-    } else {
-        timerElement.textContent = 'Tiempo: ' + game.timeLeft + 's';
-        game.timeLeft--;
-    }
-}
-
-// Función para finalizar el juego
-function endGame() {
-    localStorage.setItem('playerName', game.playerName);
-    localStorage.setItem('score', game.score);
-    window.location.href = 'gameover.html';
-}
-
-// Función para reiniciar el juego
-function resetGame() {
-    clearInterval(game.timer);
-    game.timeLeft = 180;
-    game.score = 0;
-    game.currentWord = '';
-    game.currentWordPath = [];
-    game.wordsFound = [];
-    game.board = generateBoard();
-    updateBoard();
-    scoreElement.textContent = 'Puntaje: 0';
-    wordListElement.innerHTML = '';
-    currentWordElement.textContent = '';
-    playerForm.style.display = 'flex';
-    gameBoard.classList.add('hidden');
-    messageElement.textContent = '';
-}
-
-// Función para mostrar mensajes
-function showMessage(message, type) {
-    if (typeof type === 'undefined') { type = 'error'; }
-    messageElement.textContent = message;
-    messageElement.className = type;
-}
+});
