@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Obtiene referencias a los elementos del DOM por sus IDs
     var playerForm = document.getElementById('player-form');
     var playerNameInput = document.getElementById('player-name');
+    var timerSelect = document.getElementById('timer-select');
     var gameBoard = document.getElementById('game-board');
     var timerElement = document.getElementById('timer');
     var scoreElement = document.getElementById('score');
@@ -14,11 +15,12 @@ document.addEventListener('DOMContentLoaded', function() {
     var validateWordButton = document.getElementById('validate-word');
     var shuffleBoardButton = document.getElementById('shuffle-board');
     var messageElement = document.getElementById('message');
+    
 
     // Define el objeto 'game' que contiene el estado del juego
     var game = {
         timer: null,
-        timeLeft: 180, // 3 minutos en segundos
+        timeLeft: 180, // 3 minutos en segundos por defecto
         score: 0,
         currentWord: '',// Palabra actual
         currentWordPath: [],// Camino de la palabra actual
@@ -59,12 +61,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+        // Obtiene el tiempo seleccionado del temporizador
+        game.timeLeft = parseInt(timerSelect.value);
+
         // Oculta el formulario del nombre del jugador y muestra el tablero del juego
         playerForm.style.display = 'none';
         gameBoard.classList.remove('hidden');
 
         // Reinicia el estado del juego
-        game.timeLeft = 180;
         game.score = 0;
         game.currentWord = '';
         game.currentWordPath = [];
@@ -97,6 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
             game.currentWordPath.push(index); // Añade el índice al camino de la palabra actual
             currentWordElement.textContent = game.currentWord; // Actualiza la palabra actual en el DOM
             document.querySelector(`[data-index='${index}']`).classList.add('selected'); // Marca la celda como seleccionada
+            updateSelectableLetters(index); // Actualiza las letras seleccionables
         }
     }
 
@@ -110,6 +115,28 @@ document.addEventListener('DOMContentLoaded', function() {
         ];
         // Comprueba si el índice es un movimiento válido y no está en el camino actual
         return validMoves.includes(index) && !game.currentWordPath.includes(index);
+    }
+
+    // Función para actualizar las letras seleccionables
+    function updateSelectableLetters(lastIndex) {
+        clearSelectableCells();
+        var validMoves = [
+            lastIndex - 5, lastIndex - 4, lastIndex - 3,
+            lastIndex - 1, lastIndex + 1,
+            lastIndex + 3, lastIndex + 4, lastIndex + 5
+        ];
+
+        validMoves.forEach(function(index) {
+            if (index >= 0 && index < 16 && !game.currentWordPath.includes(index)) {
+                document.querySelector(`[data-index='${index}']`).classList.add('selectable');
+            }
+        });
+    }
+
+    // Función para limpiar las celdas seleccionables
+    function clearSelectableCells() {
+        var cells = document.querySelectorAll('.board-cell');
+        cells.forEach(cell => cell.classList.remove('selectable'));
     }
 
     // Función para calcular el puntaje basado en la longitud de la palabra
@@ -151,6 +178,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     clearSelectedCells(); // Limpia las celdas seleccionadas
                     showMessage('Palabra válida', 'success'); // Muestra un mensaje de éxito
                 } else {
+                    game.score -= 1; // Resta un punto por palabra incorrecta
+                    scoreElement.textContent = 'Puntaje: ' + game.score; // Actualiza el puntaje en el DOM
                     showMessage('Palabra no válida'); // Muestra un mensaje de error
                     deleteWordButton.click(); // Elimina la palabra si no es válida
                 }
