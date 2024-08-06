@@ -239,3 +239,8 @@ body.dark-mode .board-cell.selected {
         font-size: 1.2em;
     }
 }
+
+/* Color diferente para las letras seleccionables */
+.board-cell.selectable {
+    background-color: #b3e5fc; 
+}
