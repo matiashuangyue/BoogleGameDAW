@@ -208,6 +208,25 @@ body.dark-mode .board-cell.selected {
     background-color: #555;
 }
 
+
+#message {
+    display: none;
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+#message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+#message.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+
 /* Media queries para adaptar celu */
 @media (max-width: 600px) {
     header {
