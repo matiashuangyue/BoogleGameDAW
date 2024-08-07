@@ -38,6 +38,74 @@ document.addEventListener('DOMContentLoaded', function() {
         board: generateBoard() // Tablero de letras
     };
 
+
+
+
+
+    // Función para limpiar las celdas seleccionables
+    function clearSelectableCells() {
+        var cells = document.querySelectorAll('.board-cell');
+        for (var i = 0; i < cells.length; i++) {
+            cells[i].classList.remove('selectable');
+                }
+    }
+
+    // Función para actualizar las letras seleccionables
+    function updateSelectableLetters(lastIndex) {
+        clearSelectableCells();
+        var validMoves = [];
+        var row = Math.floor(lastIndex / 4); // Obtiene la fila actual
+        var col = lastIndex % 4; // Obtiene la columna actual
+
+        // Movimientos válidos en la misma fila
+        if (col > 0) validMoves.push(lastIndex - 1);
+        if (col < 3) validMoves.push(lastIndex + 1);
+
+        // Movimientos válidos en la fila anterior
+        if (row > 0) {
+            if (col > 0) validMoves.push(lastIndex - 5);
+            validMoves.push(lastIndex - 4);
+            if (col < 3) validMoves.push(lastIndex - 3);
+        }
+
+        // Movimientos válidos en la fila siguiente
+        if (row < 3) {
+            if (col > 0) validMoves.push(lastIndex + 3);
+            validMoves.push(lastIndex + 4);
+            if (col < 3) validMoves.push(lastIndex + 5);
+        }
+
+        validMoves.forEach(function(index) {
+            if (index >= 0 && index < 16 && game.currentWordPath.indexOf(index) === -1) {
+                document.querySelector(`[data-index='${index}']`).classList.add('selectable');
+            }
+        });
+    }
+    
+    // Función para actualizar el tablero en el DOM
+    function updateBoard() {
+        boardElement.innerHTML = ''; // Limpia el tablero
+        game.board.forEach(function(letter, index) {//callback function
+            var cell = document.createElement('div');
+            cell.textContent = letter; 
+            cell.dataset.index = index; // Establece el índice de la celda
+            cell.classList.add('board-cell'); // Añade la clase board-cell para aplicar estilos
+            cell.addEventListener('click', function() {
+                selectLetter(letter, index); // Añade el event listener para seleccionar la letra
+            });
+            boardElement.appendChild(cell); // Añade la celda al tablero
+        });
+    }
+
+    // Función para limpiar las celdas seleccionadas
+    function clearSelectedCells() {
+        var cells = document.querySelectorAll('.board-cell'); // Obtiene todas las celdas del tablero
+        cells.forEach(function(cell) {
+            cell.classList.remove('selected');
+        }); // Elimina la clase 'selected' de cada celda
+    }
+
+
     // Función para mezclar el tablero
     function shuffleBoard() {
         for (let i = game.board.length - 1; i > 0; i--) {
@@ -47,48 +115,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         // Actualiza el tablero
         updateBoard();
+        clearSelectedCells();
+        game.currentWord = '';
+        game.currentWordPath = [];
+        deleteWordButton.click();
     }   
 
-    // Función para iniciar el juego
-    function startGame() {
-        game.playerName = playerNameInput.value; // Obtiene el nombre del jugador
-        if (game.playerName.length < 3) {
-            showMessage('El nombre debe tener al menos 3 letras.');
-            return;
-        }
-
-        // Obtiene el tiempo seleccionado del temporizador
-        game.timeLeft = parseInt(timerSelect.value);
-        playerForm.style.display = 'none';
-        gameBoard.classList.remove('hidden');
-
-        // Reinicia el estado del juego
+    function resetGameState() {
         game.score = 0;
         game.currentWord = '';
         game.currentWordPath = [];
         game.wordsFound = [];
-        game.board = generateBoard(); // Genera un nuevo tablero cada vez que se inicia el juego
-        updateBoard(); 
-        updateTimer(); 
-        game.timer = setInterval(updateTimer, 1000); // Actualiza el temporizador cada segundo
     }
-
-    // Función para actualizar el tablero en el DOM
-    function updateBoard() {
-        boardElement.innerHTML = ''; // Limpia el tablero
-        game.board.forEach(function(letter, index) {
-            var cell = document.createElement('div');
-            cell.textContent = letter; 
-            cell.dataset.index = index; // Establece el índice de la celda
-            cell.classList.add('board-cell'); // Añade la clase board-cell
-            cell.addEventListener('click', function() {
-                selectLetter(letter, index); // Añade el event listener para seleccionar la letra
-            });
-            boardElement.appendChild(cell); // Añade la celda al tablero
-        });
-    }
-
-    // Función para seleccionar una letra en el tablero
+  // Función para seleccionar una letra en el tablero
     function selectLetter(letter, index) {
         if (game.currentWordPath.length === 0 || isValidSelection(index)) {
             game.currentWord += letter; // Añade la letra a la palabra actual
@@ -98,6 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
             updateSelectableLetters(index); // Actualiza las letras seleccionables
         }
     }
+   
     
     // Función para validar si la selección de una letra es correcta
 function isValidSelection(index) {
@@ -128,43 +168,6 @@ function isValidSelection(index) {
     return validMoves.includes(index) && !game.currentWordPath.includes(index);
 }
 
-// Función para actualizar las letras seleccionables
-function updateSelectableLetters(lastIndex) {
-    clearSelectableCells();
-    var validMoves = [];
-    var row = Math.floor(lastIndex / 4); // Obtiene la fila actual
-    var col = lastIndex % 4; // Obtiene la columna actual
-
-    // Movimientos válidos en la misma fila
-    if (col > 0) validMoves.push(lastIndex - 1);
-    if (col < 3) validMoves.push(lastIndex + 1);
-
-    // Movimientos válidos en la fila anterior
-    if (row > 0) {
-        if (col > 0) validMoves.push(lastIndex - 5);
-        validMoves.push(lastIndex - 4);
-        if (col < 3) validMoves.push(lastIndex - 3);
-    }
-
-    // Movimientos válidos en la fila siguiente
-    if (row < 3) {
-        if (col > 0) validMoves.push(lastIndex + 3);
-        validMoves.push(lastIndex + 4);
-        if (col < 3) validMoves.push(lastIndex + 5);
-    }
-
-    validMoves.forEach(function(index) {
-        if (index >= 0 && index < 16 && game.currentWordPath.indexOf(index) === -1) {
-            document.querySelector(`[data-index='${index}']`).classList.add('selectable');
-        }
-    });
-}
-
-    // Función para limpiar las celdas seleccionables
-    function clearSelectableCells() {
-        var cells = document.querySelectorAll('.board-cell');
-        cells.forEach(cell => cell.classList.remove('selectable'));
-    }
 
     // Función para calcular el puntaje basado en la longitud de la palabra
     function calculateScore(length) {
@@ -224,14 +227,6 @@ function updateSelectableLetters(lastIndex) {
         clearSelectedCells(); 
     }
 
-    // Función para limpiar las celdas seleccionadas
-    function clearSelectedCells() {
-        var cells = document.querySelectorAll('.board-cell'); // Obtiene todas las celdas del tablero
-        cells.forEach(function(cell) {
-            cell.classList.remove('selected');
-        }); // Elimina la clase 'selected' de cada celda
-    }
-
     // Función para actualizar el temporizador
     function updateTimer() {
         if (game.timeLeft <= 0) {
@@ -241,6 +236,27 @@ function updateSelectableLetters(lastIndex) {
             timerElement.textContent = 'Tiempo: ' + game.timeLeft + 's'; // Actualiza el temporizador en el DOM
             game.timeLeft--; // Decrementa el tiempo restante
         }
+    }
+
+     // Función para iniciar el juego
+     function startGame() {
+        game.playerName = playerNameInput.value; // Obtiene el nombre del jugador
+        if (game.playerName.length < 3) {
+            showMessage('El nombre debe tener al menos 3 letras.');
+            return;
+        }
+
+        // Obtiene el tiempo seleccionado del temporizador
+        game.timeLeft = parseInt(timerSelect.value);
+        playerForm.style.display = 'none';
+        gameBoard.classList.remove('hidden');
+
+        // Reinicia el estado del juego
+        resetGameState();   
+        game.board = generateBoard(); // Genera un nuevo tablero cada vez que se inicia el juego
+        updateBoard(); 
+        updateTimer(); 
+        game.timer = setInterval(updateTimer, 1000); // Actualiza el temporizador cada segundo
     }
 
     // Función para finalizar el juego
