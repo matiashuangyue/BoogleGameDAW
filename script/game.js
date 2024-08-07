@@ -98,8 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
             updateSelectableLetters(index); // Actualiza las letras seleccionables
         }
     }
-
-    // Función para validar si la selección de una letra es correcta
+    
     // Función para validar si la selección de una letra es correcta
 function isValidSelection(index) {
     var lastIndex = game.currentWordPath[game.currentWordPath.length - 1]; // Obtiene el último índice
@@ -130,38 +129,6 @@ function isValidSelection(index) {
 }
 
 // Función para actualizar las letras seleccionables
-function updateSelectableLetters(lastIndex) {
-    clearSelectableCells();
-    var validMoves = [];
-    var row = Math.floor(lastIndex / 4); // Obtiene la fila actual
-    var col = lastIndex % 4; // Obtiene la columna actual
-
-    // Movimientos válidos en la misma fila
-    if (col > 0) validMoves.push(lastIndex - 1);
-    if (col < 3) validMoves.push(lastIndex + 1);
-
-    // Movimientos válidos en la fila anterior
-    if (row > 0) {
-        if (col > 0) validMoves.push(lastIndex - 5);
-        validMoves.push(lastIndex - 4);
-        if (col < 3) validMoves.push(lastIndex - 3);
-    }
-
-    // Movimientos válidos en la fila siguiente
-    if (row < 3) {
-        if (col > 0) validMoves.push(lastIndex + 3);
-        validMoves.push(lastIndex + 4);
-        if (col < 3) validMoves.push(lastIndex + 5);
-    }
-
-    validMoves.forEach(function(index) {
-        if (index >= 0 && index < 16 && game.currentWordPath.indexOf(index) === -1) {
-            document.querySelector(`[data-index='${index}']`).classList.add('selectable');
-        }
-    });
-}
-
-   // Función para actualizar las letras seleccionables
 function updateSelectableLetters(lastIndex) {
     clearSelectableCells();
     var validMoves = [];
