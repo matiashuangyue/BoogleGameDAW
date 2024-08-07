@@ -18,38 +18,10 @@
             <p id="score-display"></p>
             <button onclick="goToHome()">Volver al Inicio</button>
             <h2>Ranking</h2>
-            <ul id="ranking-list"></ul> <!-- Agregado para el ranking -->
+            <ul id="ranking-list"></ul>
         </div>
     </main>
-    <script>
-        function goToHome() {
-            window.location.href = 'index.html';
-        }
-
-        // Función para actualizar y mostrar el ranking
-        function updateRanking() {
-            let rankings = JSON.parse(localStorage.getItem('rankings')) || [];
-            const rankingList = document.getElementById('ranking-list');
-            rankingList.innerHTML = '';
-            rankings.forEach((entry, index) => {
-                const listItem = document.createElement('li');
-                listItem.textContent = `${index + 1}. ${entry.playerName} | ${entry.score}`;
-                rankingList.appendChild(listItem);
-            });
-        }
-
-        // Obtener datos del localStorage y mostrar en la página
-        document.addEventListener('DOMContentLoaded', function() {
-            const playerName = localStorage.getItem('playerName');
-            const score = localStorage.getItem('score');
-
-            document.getElementById('player-name-display').textContent = `Jugador: ${playerName}`;
-            document.getElementById('score-display').textContent = `Puntaje: ${score}`;
-
-            // Actualiza y muestra el ranking
-            updateRanking();
-        });
-    </script>
     <script src="script/Theme.js"></script>
+    <script src="script/gameover.js"></script>
 </body>
 </html>

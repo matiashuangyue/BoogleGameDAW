@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var shuffleBoardButton = document.getElementById('shuffle-board');
     var messageElement = document.getElementById('message');
 
+    
     // Función para generar un tablero de letras aleatorias
     function generateBoard() {
         var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
