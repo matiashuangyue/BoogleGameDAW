@@ -164,6 +164,7 @@ main {
 /* Current Word */
 #current-word-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
     margin: 1em 0;
 }
