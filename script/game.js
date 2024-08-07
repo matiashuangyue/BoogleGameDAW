@@ -100,32 +100,98 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Función para validar si la selección de una letra es correcta
-    function isValidSelection(index) {
-        var lastIndex = game.currentWordPath[game.currentWordPath.length - 1]; // Obtiene el último índice
-        var validMoves = [
-            lastIndex - 5, lastIndex - 4, lastIndex - 3, // Fila anterior
-            lastIndex - 1, lastIndex + 1,               // Misma fila
-            lastIndex + 3, lastIndex + 4, lastIndex + 5 // Siguiente fila
-        ];
-        // Comprueba si el índice es un movimiento válido y no está en el camino actual
-        return validMoves.includes(index) && !game.currentWordPath.includes(index);
+    // Función para validar si la selección de una letra es correcta
+function isValidSelection(index) {
+    var lastIndex = game.currentWordPath[game.currentWordPath.length - 1]; // Obtiene el último índice
+    var validMoves = [];
+    var row = Math.floor(lastIndex / 4); // Obtiene la fila actual
+    var col = lastIndex % 4; // Obtiene la columna actual
+
+    // Movimientos válidos en la misma fila
+    if (col > 0) validMoves.push(lastIndex - 1);
+    if (col < 3) validMoves.push(lastIndex + 1);
+
+    // Movimientos válidos en la fila anterior
+    if (row > 0) {
+        if (col > 0) validMoves.push(lastIndex - 5);
+        validMoves.push(lastIndex - 4);
+        if (col < 3) validMoves.push(lastIndex - 3);
     }
 
-    // Función para actualizar las letras seleccionables
-    function updateSelectableLetters(lastIndex) {
-        clearSelectableCells();
-        var validMoves = [
-            lastIndex - 5, lastIndex - 4, lastIndex - 3,
-            lastIndex - 1, lastIndex + 1,
-            lastIndex + 3, lastIndex + 4, lastIndex + 5
-        ];
-
-        validMoves.forEach(function(index) {
-            if (index >= 0 && index < 16 && game.currentWordPath.indexOf(index) === -1) {
-                document.querySelector(`[data-index='${index}']`).classList.add('selectable');
-            }
-        });
+    // Movimientos válidos en la fila siguiente
+    if (row < 3) {
+        if (col > 0) validMoves.push(lastIndex + 3);
+        validMoves.push(lastIndex + 4);
+        if (col < 3) validMoves.push(lastIndex + 5);
     }
+
+    // Comprueba si el índice es un movimiento válido y no está en el camino actual
+    return validMoves.includes(index) && !game.currentWordPath.includes(index);
+}
+
+// Función para actualizar las letras seleccionables
+function updateSelectableLetters(lastIndex) {
+    clearSelectableCells();
+    var validMoves = [];
+    var row = Math.floor(lastIndex / 4); // Obtiene la fila actual
+    var col = lastIndex % 4; // Obtiene la columna actual
+
+    // Movimientos válidos en la misma fila
+    if (col > 0) validMoves.push(lastIndex - 1);
+    if (col < 3) validMoves.push(lastIndex + 1);
+
+    // Movimientos válidos en la fila anterior
+    if (row > 0) {
+        if (col > 0) validMoves.push(lastIndex - 5);
+        validMoves.push(lastIndex - 4);
+        if (col < 3) validMoves.push(lastIndex - 3);
+    }
+
+    // Movimientos válidos en la fila siguiente
+    if (row < 3) {
+        if (col > 0) validMoves.push(lastIndex + 3);
+        validMoves.push(lastIndex + 4);
+        if (col < 3) validMoves.push(lastIndex + 5);
+    }
+
+    validMoves.forEach(function(index) {
+        if (index >= 0 && index < 16 && game.currentWordPath.indexOf(index) === -1) {
+            document.querySelector(`[data-index='${index}']`).classList.add('selectable');
+        }
+    });
+}
+
+   // Función para actualizar las letras seleccionables
+function updateSelectableLetters(lastIndex) {
+    clearSelectableCells();
+    var validMoves = [];
+    var row = Math.floor(lastIndex / 4); // Obtiene la fila actual
+    var col = lastIndex % 4; // Obtiene la columna actual
+
+    // Movimientos válidos en la misma fila
+    if (col > 0) validMoves.push(lastIndex - 1);
+    if (col < 3) validMoves.push(lastIndex + 1);
+
+    // Movimientos válidos en la fila anterior
+    if (row > 0) {
+        if (col > 0) validMoves.push(lastIndex - 5);
+        validMoves.push(lastIndex - 4);
+        if (col < 3) validMoves.push(lastIndex - 3);
+    }
+
+    // Movimientos válidos en la fila siguiente
+    if (row < 3) {
+        if (col > 0) validMoves.push(lastIndex + 3);
+        validMoves.push(lastIndex + 4);
+        if (col < 3) validMoves.push(lastIndex + 5);
+    }
+
+    validMoves.forEach(function(index) {
+        if (index >= 0 && index < 16 && game.currentWordPath.indexOf(index) === -1) {
+            document.querySelector(`[data-index='${index}']`).classList.add('selectable');
+        }
+    });
+}
 
     // Función para limpiar las celdas seleccionables
     function clearSelectableCells() {
