@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var shuffleBoardButton = document.getElementById('shuffle-board');
     var messageElement = document.getElementById('message');
 
- // Función para generar un tablero de letras aleatorias
+    // Función para generar un tablero de letras aleatorias
     function generateBoard() {
         var letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
         var board = [];
@@ -31,26 +31,23 @@ document.addEventListener('DOMContentLoaded', function() {
         timer: null,
         timeLeft: 180, // 3 minutos en segundos por defecto
         score: 0,
-        currentWord: '',// Palabra actual
-        currentWordPath: [],// Camino de la palabra actual
-        wordsFound: [],// Palabras encontradas
+        currentWord: '', // Palabra actual
+        currentWordPath: [], // Camino de la palabra actual
+        wordsFound: [], // Palabras encontradas
         playerName: '',
-        board: generateBoard()// Tablero de letras
+        board: generateBoard() // Tablero de letras
     };
-
-   
 
     // Función para mezclar el tablero
     function shuffleBoard() {
-    for (let i = game.board.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        // Intercambia el elemento en la posición i con el elemento en la posición j
-        [game.board[i], game.board[j]] = [game.board[j], game.board[i]];
-    }
-    // Actualiza el tablero
-    updateBoard();
+        for (let i = game.board.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            // Intercambia el elemento en la posición i con el elemento en la posición j
+            [game.board[i], game.board[j]] = [game.board[j], game.board[i]];
+        }
+        // Actualiza el tablero
+        updateBoard();
     }   
-
 
     // Función para iniciar el juego
     function startGame() {
@@ -215,8 +212,19 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Función para finalizar el juego
     function endGame() {
+        // Almacena el puntaje y el nombre del jugador en localStorage
         localStorage.setItem('playerName', game.playerName);
         localStorage.setItem('score', game.score); 
+
+        // Actualiza el ranking
+        let rankings = JSON.parse(localStorage.getItem('rankings')) || [];
+        rankings.push({ playerName: game.playerName, score: game.score });
+        rankings.sort((a, b) => b.score - a.score); // Ordena el ranking de mayor a menor
+        if (rankings.length > 10) {
+            rankings = rankings.slice(0, 10); // Limita a los 10 mejores jugadores
+        }
+        localStorage.setItem('rankings', JSON.stringify(rankings));
+
         window.location.href = 'gameover.html'; 
     }
 
@@ -257,5 +265,4 @@ document.addEventListener('DOMContentLoaded', function() {
         messageElement.textContent = message; // Establece el texto del mensaje
         messageElement.className = type; // Establece la clase del mensaje
     }
-
 });
