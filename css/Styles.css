@@ -1,12 +1,16 @@
+/* General */
 body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    font-family: Arial, sans-serif;
+    font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
+    background-color: #f5f5f5;
+    color: #333;
 }
 
+/* Header */
 header {
     display: flex;
     justify-content: space-between;
@@ -14,17 +18,26 @@ header {
     padding: 1em;
     background-color: #4CAF50;
     color: #FFFFFF;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 header h1 {
     margin: 0;
+    font-size: 1.5rem;
 }
 
 header a {
     color: #FFFFFF;
     text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s ease;
 }
 
+header a:hover {
+    color: #C8E6C9;
+}
+
+/* Main */
 main {
     display: flex;
     flex-direction: column;
@@ -33,6 +46,7 @@ main {
     padding: 2em;
 }
 
+/* Game Section */
 #game-section {
     display: flex;
     flex-direction: column;
@@ -48,8 +62,31 @@ main {
 #player-form input, 
 #player-form button {
     margin: 0.5em;
+    padding: 0.5em;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
 }
 
+#player-form input:focus,
+#player-form button:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.3);
+}
+
+#player-form button {
+    background-color: #4CAF50;
+    color: #fff;
+    cursor: pointer;
+}
+
+#player-form button:hover {
+    background-color: #45A049;
+}
+
+/* Game Board */
 #game-board.hidden {
     display: none;
 }
@@ -57,34 +94,42 @@ main {
 #board {
     display: flex;
     flex-wrap: wrap;
-    width: 160px; /* Ajusta el tamaño del tablero */
+    width: 160px;
+    gap: 5px;
+    margin-top: 1em;
 }
 
 .board-cell {
-    background-color: #F0F0F0;
+    background-color: #FFFFFF;
     border: 1px solid #CCCCCC;
-    width: 25%;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     text-align: center;
     font-size: 1.5rem;
     cursor: pointer;
     user-select: none;
-    box-sizing: border-box; /* Para que el tamaño incluya el borde */
+    box-sizing: border-box;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .board-cell.selected {
     background-color: #E3E3E3;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .board-cell.selectable {
     background-color: #B3E5FC;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 #timer {
     font-size: 1.5em;
     margin: 1em 0;
+    color: #4CAF50;
 }
 
+/* Modal */
 #modal {
     position: fixed;
     top: 0;
@@ -106,13 +151,17 @@ main {
     padding: 2em;
     border-radius: 5px;
     width: 300px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
 #close-modal {
     cursor: pointer;
     float: right;
+    color: #FF0000;
 }
 
+/* Current Word */
 #current-word-container {
     display: flex;
     align-items: center;
@@ -122,16 +171,29 @@ main {
 #current-word {
     margin-right: 10px;
     font-size: 1.2em;
+    font-weight: bold;
 }
 
 button {
     margin: 5px;
+    padding: 0.5em 1em;
+    border-radius: 5px;
+    border: none;
+    background-color: #4CAF50;
+    color: #FFFFFF;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45A049;
 }
 
 .hidden {
     display: none;
 }
 
+/* Game Over */
 #game-over {
     text-align: center;
     margin-top: 20px;
@@ -147,6 +209,7 @@ button {
     margin-top: 10px;
 }
 
+/* Contact Form */
 .contact-htp {
     margin-right: 50%;
     margin-bottom: 25%;
@@ -179,7 +242,7 @@ button {
     color: #155724;
 }
 
-/* Estilos para modo claro */
+/* Light Mode */
 body.light-mode {
     background-color: #FFFFFF;
     color: #000000;
@@ -202,7 +265,7 @@ body.light-mode .board-cell.selected {
     background-color: #E3E3E3;
 }
 
-/* Estilos para modo oscuro */
+/* Dark Mode */
 body.dark-mode {
     background-color: #121212;
     color: #FFFFFF;
@@ -230,7 +293,7 @@ body.dark-mode #theme-toggle {
     background-color: #FFFFFF;
 }
 
-/* Media queries para adaptar celu */
+/* Responsive Design */
 @media (max-width: 600px) {
     header {
         flex-direction: column;
@@ -261,3 +324,4 @@ body.dark-mode #theme-toggle {
         font-size: 1.2em;
     }
 }
+
