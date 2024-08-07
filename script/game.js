@@ -41,6 +41,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+    // Función para limpiar las celdas seleccionadas
+    function clearSelectedCells() {
+        var cells = document.querySelectorAll('.board-cell'); // Obtiene todas las celdas del tablero
+        cells.forEach(function(cell) {
+            cell.classList.remove('selected');
+        }); // Elimina la clase 'selected' de cada celda
+    }
 
 
     // Función para limpiar las celdas seleccionables
@@ -98,14 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Función para limpiar las celdas seleccionadas
-    function clearSelectedCells() {
-        var cells = document.querySelectorAll('.board-cell'); // Obtiene todas las celdas del tablero
-        cells.forEach(function(cell) {
-            cell.classList.remove('selected');
-        }); // Elimina la clase 'selected' de cada celda
-    }
-
+    
 
     // Función para mezclar el tablero
     function shuffleBoard() {
@@ -117,6 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Actualiza el tablero
         updateBoard();
         clearSelectedCells();
+        clearSelectableCells();
         game.currentWord = '';
         game.currentWordPath = [];
         deleteWordButton.click();
@@ -206,6 +207,7 @@ function isValidSelection(index) {
                     game.currentWordPath = []; 
                     currentWordElement.textContent = ''; // Limpia la palabra actual en el DOM
                     clearSelectedCells(); // Limpia las celdas seleccionadas
+                    clearSelectableCells(); // Limpia las celdas seleccionables
                     showMessage('Palabra válida', 'success'); 
                 } else {
                     game.score -= 1; // Resta un punto por palabra incorrecta
@@ -226,6 +228,7 @@ function isValidSelection(index) {
         game.currentWordPath = []; 
         currentWordElement.textContent = ''; 
         clearSelectedCells(); 
+        clearSelectableCells();
     }
 
     // Función para actualizar el temporizador
@@ -288,6 +291,7 @@ function isValidSelection(index) {
     deleteWordButton.addEventListener('click', deleteWord);
     validateWordButton.addEventListener('click', function() {
         validateWord(game.currentWord);
+        clearSelectableCells();
     });
     shuffleBoardButton.addEventListener('click', shuffleBoard);
     endGameButton.addEventListener('click', endGame);
