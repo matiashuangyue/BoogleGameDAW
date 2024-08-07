@@ -1,5 +1,11 @@
 'use strict';
+const menuToggle = document.getElementById('menu-toggle');
+const menu = document.getElementById('menu');
 
+menuToggle.addEventListener('click', () => {
+  menuToggle.classList.toggle('active');
+  menu.classList.toggle('active');
+});
 // Espera a que el DOM se cargue completamente antes de ejecutar la función
 document.addEventListener('DOMContentLoaded', function() {
     var modal = document.getElementById('modal');
